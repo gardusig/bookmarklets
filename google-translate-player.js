@@ -119,7 +119,7 @@ javascript: (function () {
   const playButtonStateAttr = "aria-label";
   const stopListeningValue = "Stop listening";
   const charCountSelector =
-    "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.OlSOob > c-wiz > div.ccvoYb > div.AxqVh > div.OPPzxe > c-wiz.rm1UF.dHeVVb.UnxENd.rBs9Gd > div.FFpbKc > div > span";
+    "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.OlSOob > c-wiz > div.ccvoYb > div.AxqVh > div.OPPzxe > c-wiz.rm1UF.dHeVVb.UnxENd > div.FFpbKc > div > span";
 
   let stopFlag = false;
   let playButtonSelector = undefined;
