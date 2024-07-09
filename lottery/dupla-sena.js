@@ -118,7 +118,6 @@ javascript: (function () {
         prompt("Enter combinations (e.g., 1,2,3,4,5,6;7,8,9,10,11,12):") ||
         defaultInput;
     }
-
     const contestCombinations = input.split(";");
     for (const contestCombinationInput of contestCombinations) {
       const contest = getContestFromInput(contestCombinationInput);
