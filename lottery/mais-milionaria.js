@@ -109,10 +109,12 @@ javascript: (function () {
   }
 
   async function runContestsFromInput() {
-    let input =
-      prompt(
-        "Enter combinations (e.g., 1,2,3,4,5,6 1,2;7,8,9,10,11,12 3,4):"
-      ) ?? defaultInput;
+    let input = prompt(
+      "Enter combinations (e.g., 1,2,3,4,5,6 1,2;7,8,9,10,11,12 3,4):"
+    );
+    if (!input) {
+      input = defaultInput;
+    }
     const contestCombinations = [];
     for (const contestCombinationInput of input.split(";")) {
       const contest = getContestFromInput(contestCombinationInput);
