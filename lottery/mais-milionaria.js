@@ -87,7 +87,7 @@ javascript: (function () {
     console.warn("payment required");
   }
 
-  async function processcontest(contest) {
+  async function processContest(contest) {
     await clickNumberButtons(contest.numbers);
     await clickCloverButtons(contest.clovers);
     await addToCart();
@@ -121,7 +121,7 @@ javascript: (function () {
       }
     }
     for (const contest of contestCombinations) {
-      await processcontest(contest);
+      await processContest(contest);
       contestCount++;
     }
     console.warn("all contests processed");
