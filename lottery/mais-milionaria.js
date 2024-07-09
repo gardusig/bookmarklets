@@ -94,32 +94,32 @@ javascript: (function () {
     await sleep(getRandomSleepTime(777, 1777));
   }
 
-  async function runContestsFromInput() {
-    let input = prompt(
-      "Enter combinations (e.g., 1,2,3,4,5,6 1,2;7,8,9,10,11,12 3,4):"
-    );
-    if (!input) {
-      input =
-        "1,2,3,4,5,6 1,2" +
-        ";" +
-        "7,8,9,10,11,12 3,4" +
-        ";" +
-        "13,14,15,16,17,18 5,6" +
-        ";" +
-        "13,14,15,16,17,18 1,6" +
-        ";" +
-        "13,14,15,16,17,18 2,6";
+  function getContestFromInput(contestCombinationInput) {
+    if (contestCombinationInput.length === 0) {
+      return null;
     }
-    const contestCombinations = input.split(";").map((item) => {
-      const [numbersString, cloversString] = item.split(" ");
-      const numbers = numbersString
-        .split(",")
-        .map((num) => parseInt(num.trim(), 10));
-      const clovers = cloversString
-        .split(",")
-        .map((clover) => parseInt(clover.trim(), 10));
-      return { numbers, clovers };
-    });
+    const [numbersString, cloversString] = contestCombinationInput.split(" ");
+    const numbers = numbersString
+      .split(",")
+      .map((num) => parseInt(num.trim(), 10));
+    const clovers = cloversString
+      .split(",")
+      .map((clover) => parseInt(clover.trim(), 10));
+    return { numbers: numbers, clovers: clovers };
+  }
+
+  async function runContestsFromInput() {
+    let input =
+      prompt(
+        "Enter combinations (e.g., 1,2,3,4,5,6 1,2;7,8,9,10,11,12 3,4):"
+      ) ?? defaultInput;
+    const contestCombinations = [];
+    for (const contestCombinationInput of input.split(";")) {
+      const contest = getContestFromInput(contestCombinationInput);
+      if (contest !== null) {
+        contestCombinations.push(contest);
+      }
+    }
     for (const contest of contestCombinations) {
       await processcontest(contest);
       contestCount++;
@@ -128,6 +128,16 @@ javascript: (function () {
   }
 
   let contestCount = 1;
+  const defaultInput =
+    "1,2,3,4,5,6 1,2" +
+    ";" +
+    "7,8,9,10,11,12 3,4" +
+    ";" +
+    "13,14,15,16,17,18 5,6" +
+    ";" +
+    "13,14,15,16,17,18 1,6" +
+    ";" +
+    "13,14,15,16,17,18 2,6";
 
   (async function () {
     await runContestsFromInput();
