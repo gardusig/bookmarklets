@@ -1,15 +1,25 @@
 javascript: (function () {
   let contestCount = 1;
   const defaultInput =
-    "1,2,3,4,5,6 1,2" +
+    "1,2,3,4,5,6" +
     ";" +
-    "7,8,9,10,11,12 3,4" +
+    "7,8,9,10,11,12" +
     ";" +
-    "13,14,15,16,17,18 5,6" +
+    "13,14,15,16,17,18" +
     ";" +
-    "13,14,15,16,17,18 1,6" +
+    "19,20,21,22,23,24" +
     ";" +
-    "13,14,15,16,17,18 2,6";
+    "25,26,27,28,29,30" +
+    ";" +
+    "31,32,33,34,35,36" +
+    ";" +
+    "37,38,39,40,41,42" +
+    ";" +
+    "43,44,45,46,47,48" +
+    ";" +
+    "49,50,51,52,53,54" +
+    ";" +
+    "55,56,57,58,59,60";
 
   async function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -56,7 +66,8 @@ javascript: (function () {
     try {
       let numberPosition = 1;
       for (const id of numberIds) {
-        await clickElement(`#n${id}`);
+        const paddedId = id.toString().padStart(2, "0");
+        await clickElement(`#n${paddedId}`);
         console.log(
           `Contest #${contestCount}: picked number at position ${numberPosition++}`
         );
@@ -65,24 +76,6 @@ javascript: (function () {
     } catch (error) {
       console.error(
         `Contest #${contestCount}: error in clickNumberButtons:`,
-        error
-      );
-    }
-  }
-
-  async function clickCloverButtons(cloverIds) {
-    try {
-      let cloverPosition = 1;
-      for (const id of cloverIds) {
-        await clickElement(`#trevo${id}`);
-        console.log(
-          `Contest #${contestCount}: picked clover at position ${cloverPosition++}`
-        );
-      }
-      console.warn(`Contest #${contestCount}: finished selecting clovers`);
-    } catch (error) {
-      console.error(
-        `Contest #${contestCount}: error in clickCloverButtons:`,
         error
       );
     }
@@ -101,7 +94,6 @@ javascript: (function () {
 
   async function processContest(contest) {
     await clickNumberButtons(contest.numbers);
-    await clickCloverButtons(contest.clovers);
     await addToCart();
     await sleep(getRandomSleepTime(777, 1777));
   }
@@ -110,22 +102,17 @@ javascript: (function () {
     if (contestCombinationInput.length === 0) {
       return null;
     }
-    const [numbersString, cloversString] = contestCombinationInput.split(" ");
-    const numbers = numbersString
+    const numbers = contestCombinationInput
       .split(",")
       .map((num) => parseInt(num.trim(), 10));
-    const clovers = cloversString
-      .split(",")
-      .map((clover) => parseInt(clover.trim(), 10));
-    return { numbers: numbers, clovers: clovers };
+    return { numbers: numbers };
   }
 
   async function runContestsFromInput(input = null) {
     if (!input) {
       input =
-        prompt(
-          "Enter combinations (e.g., 1,2,3,4,5,6 1,2;7,8,9,10,11,12 3,4):"
-        ) || defaultInput;
+        prompt("Enter combinations (e.g., 1,2,3,4,5,6;7,8,9,10,11,12):") ||
+        defaultInput;
     }
     const contestCombinations = input.split(";");
     for (const contestCombinationInput of contestCombinations) {
