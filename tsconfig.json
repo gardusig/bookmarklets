@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2017",
+    "sourceMap": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "esModuleInterop": true,
+    "lib": ["ES2017", "DOM"]
+  },
+  "include": [
+    "google/**/*.ts",
+    "lottery/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

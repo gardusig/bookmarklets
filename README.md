@@ -1,14 +1,13 @@
-# Bookmarklet
-Bunch of bookmarklets to run JS scripts within a browser
+# Bookmarklet Repository
+This repository contains JavaScript files that can be converted into bookmarklets for easy execution in web browsers.
 
-## Creating a Bookmarklet from a .js File
+## Getting Started
+To convert a TypeScript file (example.ts) into a bookmarklet, follow these steps:
 
-To create a bookmarklet from a JavaScript (.js) file, follow these steps:
+Ensure your TypeScript file (example.ts) contains the code you want to convert into a bookmarklet. This could include functionality for enhancing web pages, automating tasks, or interacting with specific websites.
 
-1. Write your JavaScript code in a `.js` file.
-2. Minify the JavaScript code to remove unnecessary whitespace and line breaks.
-3. Convert the minified code into a bookmarklet by wrapping it with `javascript:(function(){ ... })();`.
-4. URL-encode the code to ensure it works correctly as a bookmarklet.
-5. Create a bookmark in your browser and set the URL to the bookmarklet code.
+```
+npx tsc example.ts --outDir ./dist
+```
 
-Or use [this website](https://chriszarate.github.io/bookmarkleter/).
+Then use this website: https://chriszarate.github.io/bookmarkleter/
