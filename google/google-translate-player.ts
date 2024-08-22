@@ -1,9 +1,13 @@
 javascript: (function () {
-  function sleep(ms) {
+  function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
-  async function waitForElement(selector, interval = 1000, timeout = 30000) {
+  async function waitForElement(
+    selector: string,
+    interval: number = 1000,
+    timeout: number = 30000
+  ): Promise<Element> {
     const start = Date.now();
     return new Promise((resolve, reject) => {
       const checkInterval = setInterval(() => {
@@ -23,9 +27,9 @@ javascript: (function () {
     });
   }
 
-  async function clickPlayStopButton(playButtonSelector) {
+  async function clickPlayStopButton(playButtonSelector: string): Promise<void> {
     try {
-      const playButton = await waitForElement(playButtonSelector);
+      const playButton = (await waitForElement(playButtonSelector)) as HTMLElement;
       playButton.click();
       console.warn("Clicked play button");
     } catch (error) {
@@ -33,9 +37,9 @@ javascript: (function () {
     }
   }
 
-  async function isPlayerPlaying(playButtonSelector) {
+  async function isPlayerPlaying(playButtonSelector: string): Promise<boolean> {
     try {
-      const playButton = await waitForElement(playButtonSelector);
+      const playButton = (await waitForElement(playButtonSelector)) as HTMLElement;
       const playButtonState = playButton.getAttribute(playButtonStateAttr);
       console.log(`Play button state: ${playButtonState}`);
       return playButtonState === stopListeningValue;
@@ -45,10 +49,10 @@ javascript: (function () {
     }
   }
 
-  async function shouldMoveToNextPage() {
+  async function shouldMoveToNextPage(): Promise<boolean> {
     try {
-      const charCountElement = await waitForElement(charCountSelector);
-      const charCountText = charCountElement.textContent.trim();
+      const charCountElement = (await waitForElement(charCountSelector)) as HTMLElement;
+      const charCountText = charCountElement.textContent?.trim();
       console.log(`Character count text: ${charCountText}`);
       return charCountText === "5,000 / 5,000";
     } catch (error) {
@@ -57,9 +61,9 @@ javascript: (function () {
     }
   }
 
-  async function moveToNextPage() {
+  async function moveToNextPage(): Promise<void> {
     try {
-      const nextButton = await waitForElement(nextButtonSelector);
+      const nextButton = (await waitForElement(nextButtonSelector)) as HTMLElement;
       nextButton.click();
       console.warn("Moved to next page");
     } catch (error) {
@@ -67,7 +71,7 @@ javascript: (function () {
     }
   }
 
-  async function waitForPlayerToStop(playButtonSelector) {
+  async function waitForPlayerToStop(playButtonSelector: string): Promise<void> {
     let totalWaitTime = 0;
     let sleepTime = 3000;
     let attempts = 0;
@@ -86,7 +90,7 @@ javascript: (function () {
     }
   }
 
-  function createButton(text, top, right) {
+  function createButton(text: string, top: string, right: string): HTMLButtonElement {
     const button = document.createElement("button");
     button.innerText = text;
     button.style.position = "fixed";
@@ -97,7 +101,7 @@ javascript: (function () {
     return button;
   }
 
-  function waitForPlayButtonSelection() {
+  function waitForPlayButtonSelection(): Promise<string> {
     return new Promise((resolve) => {
       playOriginalButton.addEventListener("click", () => {
         console.warn("Play Original button clicked");
@@ -110,19 +114,19 @@ javascript: (function () {
     });
   }
 
-  const nextButtonSelector =
+  const nextButtonSelector: string =
     "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.ef1twd > div > div.vG0hre > button:nth-child(2)";
-  const playButtonOriginalSelector =
+  const playButtonOriginalSelector: string =
     "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.OlSOob > c-wiz > div.ccvoYb > div.AxqVh > div.OPPzxe > c-wiz.rm1UF.dHeVVb.UnxENd > div.FFpbKc > div > div.r375lc > div > div.m0Qfkd > span > button";
-  const playButtonTranslatedSelector =
+  const playButtonTranslatedSelector: string =
     "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.OlSOob > c-wiz > div.ccvoYb > div.AxqVh > div.OPPzxe > c-wiz.sciAJc > div > div.usGWQd > div > div.VO9ucd > div.aJIq1d > div.m0Qfkd > span > button";
-  const playButtonStateAttr = "aria-label";
-  const stopListeningValue = "Stop listening";
-  const charCountSelector =
+  const playButtonStateAttr: string = "aria-label";
+  const stopListeningValue: string = "Stop listening";
+  const charCountSelector: string =
     "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.OlSOob > c-wiz > div.ccvoYb > div.AxqVh > div.OPPzxe > c-wiz.rm1UF.dHeVVb.UnxENd > div.FFpbKc > div > span";
 
-  let stopFlag = false;
-  let playButtonSelector = undefined;
+  let stopFlag: boolean = false;
+  let playButtonSelector: string | undefined = undefined;
 
   const stopButton = createButton("Stop Script", "10px", "10px");
   const playOriginalButton = createButton("Play Original", "50px", "10px");

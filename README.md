@@ -1,5 +1,6 @@
-# Bookmarklet Repository
-This repository contains JavaScript files that can be converted into bookmarklets for easy execution in web browsers.
+# Bookmarklet Collection
+
+This repository contains a collection of useful bookmarklets designed to automate tasks on various web pages.
 
 ## Getting Started
 To convert a TypeScript file (example.ts) into a bookmarklet, follow these steps:
@@ -11,3 +12,10 @@ npx tsc example.ts --outDir ./dist
 ```
 
 Then use this website: https://chriszarate.github.io/bookmarkleter/
+
+## Available Bookmarklets
+
+1. [Google Translate Player Automation](./docs/google-translate-player.md)
+   - Automates the process of playing audio on Google Translate, monitoring the player's status, and navigating to the next page when necessary.
+
+More bookmarklets will be added as they are developed!
