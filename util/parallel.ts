@@ -9,7 +9,7 @@ type ExecutableFunction<InputData, OutputData> = (
   input: InputData
 ) => Promise<OutputData>;
 
-export function executeTasksInParallel<InputData, OutputData>(
+export async function executeTasksInParallel<InputData, OutputData>(
   inputList: InputData[],
   executableFunction: ExecutableFunction<InputData, OutputData>,
   parallelLimit: number = 3
@@ -26,10 +26,9 @@ export function executeTasksInParallel<InputData, OutputData>(
     if (result === 0 && activeTasks.length === 0) {
       break;
     }
+    await Promise.race(activeTasks.map((task) => task.promise));
   }
-  while (activeTasks.length > 0) {
-    activeTasks = filterActiveTasks(activeTasks);
-  }
+  await Promise.all(activeTasks.map((task) => task.promise));
 }
 
 function filterActiveTasks<OutputData>(
