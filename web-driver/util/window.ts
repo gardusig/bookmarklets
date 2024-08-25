@@ -23,3 +23,13 @@ export async function waitForElement(
     }, interval);
   });
 }
+
+export async function createNewWindow(url: string): Promise<Window> {
+  console.log(`Opening url: ${url}`);
+  const newWindow = window.open(url, "_blank");
+  if (!newWindow) {
+    throw new Error(`Failed to open the new window for url: ${url}`);
+  }
+  newWindow.focus();
+  return newWindow;
+}

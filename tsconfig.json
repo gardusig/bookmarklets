@@ -17,8 +17,8 @@
     "lib": ["ES2017", "DOM"]
   },
   "include": [
-    "google/**/*.ts",
-    "lottery/**/*.ts"
+    "bookmarklet/**/*.ts",
+    "web-driver/**/*.ts"
   ],
   "exclude": [
     "node_modules",
