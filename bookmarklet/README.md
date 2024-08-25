@@ -1,6 +1,6 @@
-# Bookmarklet Collection
+# Bookmarklet
 
-This repository contains a collection of useful bookmarklets designed to automate tasks on various web pages.
+Collection of useful bookmarklets designed to automate tasks on various web pages.
 
 ## Getting Started
 To convert a TypeScript file (example.ts) into a bookmarklet, follow these steps:
