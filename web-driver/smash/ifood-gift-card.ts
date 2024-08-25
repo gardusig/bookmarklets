@@ -1,12 +1,10 @@
-// import { executeTasksInParallel } from "../util/parallel";
-import { createNewWindow, waitForElement } from "../util/window";
+import { By, Key, until, WebDriver } from "selenium-webdriver";
+import { createDriver } from "../util/web-driver";
 
 type SheetData = {
   link: string;
   password: string;
 };
-
-const passwordSelector = "body > flutter-view > flt-text-editing-host > input";
 
 const sheetDataList: SheetData[] = [
   {
@@ -19,34 +17,50 @@ const sheetDataList: SheetData[] = [
   },
 ];
 
-async function handleGiftCard(sheetData: SheetData): Promise<string> {
-  const newWindow = await createNewWindow(sheetData.link);
+async function handleGiftCard(
+  driver: WebDriver,
+  sheetData: SheetData
+): Promise<string> {
+  await driver.get(sheetData.link);
   try {
-    const inputElement = await waitForElement(newWindow, passwordSelector);
+    const inputElement = await driver.wait(
+      until.elementLocated(
+        By.css("body > flutter-view > flt-text-editing-host > input")
+      ),
+      30000
+    );
     if (!inputElement) {
       throw new Error(
-        `Failed to find password selector for link: ${sheetData.link}`
+        `Failed to find password input for link: ${sheetData.link}`
       );
     }
-    console.log(
-      `Password selector found for link: ${sheetData.link}, password: ${sheetData.password}`
-    );
+    await inputElement.sendKeys(sheetData.password);
+    await inputElement.sendKeys(Key.TAB);
+    const openGiftButton = await driver.switchTo().activeElement();
+    await openGiftButton.click();
+    console.log('Clicked on the "Open Gift" button');
+    await driver.sleep(10 * 1000);
   } catch (error) {
-    console.error(error);
-  } finally {
-    window.focus();
-    newWindow.close();
+    console.error(
+      `Error handling gift card for link: ${sheetData.link}`,
+      error
+    );
   }
   return "codeString";
 }
 
-javascript: (async function () {
-  console.log("Starting script...");
-  for (const sheetData of sheetDataList) {
-    const code = await handleGiftCard(sheetData);
-    console.log(
-      `finished processing gift card for ${sheetData.link}, code:${code}`
-    );
+(async function () {
+  const driver = createDriver();
+  console.log("created driver");
+  try {
+    for (const sheetData of sheetDataList) {
+      const code = await handleGiftCard(driver, sheetData);
+      console.log(
+        `Finished processing gift card for ${sheetData.link}, code: ${code}`
+      );
+    }
+  } finally {
+    await driver.quit();
+    console.log("quitted driver");
   }
-  console.log("Finished script");
 })();

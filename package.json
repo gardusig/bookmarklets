@@ -8,12 +8,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/es6-promise": "^3.3.0",
     "@types/node": "^20.14.10",
+    "@types/selenium-webdriver": "^4.1.25",
     "esbuild": "^0.23.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   },
   "dependencies": {
+    "selenium-webdriver": "^4.23.0",
     "uglify-js": "^3.18.0"
   }
 }
