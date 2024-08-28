@@ -3,19 +3,22 @@
 Collection of useful bookmarklets designed to automate tasks on various web pages.
 
 ## Getting Started
-To convert a TypeScript file (example.ts) into a bookmarklet, follow these steps:
 
-Ensure your TypeScript file (example.ts) contains the code you want to convert into a bookmarklet. This could include functionality for enhancing web pages, automating tasks, or interacting with specific websites.
+### Step 1: Prepare Your TypeScript File
+Ensure your TypeScript file (`example.ts`) contains the code you want to convert into a bookmarklet.
+
+### Step 2: Build the Bookmarklet
+Use the `build.js` script to compile and format your TypeScript file into a bookmarklet.
 
 ```
-npx tsc example.ts --outDir ./dist
+node build.js <path-to-typescript-file> <output-name>
 ```
 
-Then use this website: https://chriszarate.github.io/bookmarkleter/
+Output will be located in `dist/<output-name>.bundle.js`.
 
 ## Available Bookmarklets
 
 1. [Google Translate Player Automation](./docs/google-translate-player.md)
-   - Automates the process of playing audio on Google Translate, monitoring the player's status, and navigating to the next page when necessary.
+   - Automates audio playback and navigation on Google Translate.
 
 More bookmarklets will be added as they are developed!

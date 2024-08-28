@@ -1,160 +1,110 @@
-javascript: (function () {
-  function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
+import { clickButton, isElementPresent } from "../util/page-interaction";
+import { createButton } from "../util/ui";
 
-  async function waitForElement(
-    selector: string,
-    interval: number = 1000,
-    timeout: number = 30000
-  ): Promise<Element> {
-    const start = Date.now();
-    return new Promise((resolve, reject) => {
-      const checkInterval = setInterval(() => {
-        const element = document.querySelector(selector);
-        if (element) {
-          clearInterval(checkInterval);
-          resolve(element);
-        } else if (Date.now() - start >= timeout) {
-          clearInterval(checkInterval);
-          reject(
-            new Error(
-              `Element with selector "${selector}" not found within ${timeout} ms`
-            )
-          );
-        }
-      }, interval);
-    });
-  }
+type Buttons = {
+  playOriginalButton: HTMLButtonElement;
+  playTranslatedButton: HTMLButtonElement;
+  stopButton: HTMLButtonElement;
+};
 
-  async function clickPlayStopButton(playButtonSelector: string): Promise<void> {
-    try {
-      const playButton = (await waitForElement(playButtonSelector)) as HTMLElement;
-      playButton.click();
-      console.warn("Clicked play button");
-    } catch (error) {
-      console.error("Error clicking play/stop button:", error);
-    }
-  }
+const playButtonOriginalSelector: string = `button[aria-label="Listen to source text"]`;
+const playButtonTranslatedSelector: string = `button[aria-label="Listen to translation"]`;
+const stopListeningButtonSelector: string = `button[aria-label="Stop listening"]`;
+const nextPageButtonSelector: string = `button[aria-label="Next"]`;
+const nextPageSpanSelector: string = `span[aria-label="5,000 of 5,000 characters used"]`;
 
-  async function isPlayerPlaying(playButtonSelector: string): Promise<boolean> {
-    try {
-      const playButton = (await waitForElement(playButtonSelector)) as HTMLElement;
-      const playButtonState = playButton.getAttribute(playButtonStateAttr);
-      console.log(`Play button state: ${playButtonState}`);
-      return playButtonState === stopListeningValue;
-    } catch (error) {
-      console.error("Error checking play/stop button state:", error);
-      return false;
-    }
-  }
+let stopFlag: boolean = false;
 
-  async function shouldMoveToNextPage(): Promise<boolean> {
-    try {
-      const charCountElement = (await waitForElement(charCountSelector)) as HTMLElement;
-      const charCountText = charCountElement.textContent?.trim();
-      console.log(`Character count text: ${charCountText}`);
-      return charCountText === "5,000 / 5,000";
-    } catch (error) {
-      console.error("Error checking character count:", error);
-      return false;
-    }
-  }
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
-  async function moveToNextPage(): Promise<void> {
-    try {
-      const nextButton = (await waitForElement(nextButtonSelector)) as HTMLElement;
-      nextButton.click();
-      console.warn("Moved to next page");
-    } catch (error) {
-      console.error("Error moving to next page:", error);
-    }
-  }
-
-  async function waitForPlayerToStop(playButtonSelector: string): Promise<void> {
+async function waitForPlayerToFinishPlaying(
+  maxWaitTime = 10 * 60 * 1000, // 10 minutes
+  shortSleepThreshold = 5 * 60 * 1000, // 5 minutes
+  initialSleepTime = 3 * 1000, // 3 seconds
+  shortSleepTime = 500 // 500 ms
+): Promise<void> {
+  let sleepTime = initialSleepTime;
+  for (
     let totalWaitTime = 0;
-    let sleepTime = 3000;
-    let attempts = 0;
-    while ((await isPlayerPlaying(playButtonSelector)) && !stopFlag) {
-      attempts++;
-      console.log(
-        `[attempt #${attempts}] Total wait time: ${totalWaitTime}. Sleeping for ${
-          sleepTime / 1000
-        } seconds...`
-      );
-      totalWaitTime += sleepTime;
-      await sleep(sleepTime);
-      if (totalWaitTime > 5 * 60 * 1000) {
-        sleepTime = 500;
-      }
+    isElementPresent(stopListeningButtonSelector) &&
+    !stopFlag &&
+    totalWaitTime < maxWaitTime;
+    totalWaitTime += sleepTime
+  ) {
+    console.log(`Listening for: ${totalWaitTime / 1000} seconds`);
+    if (totalWaitTime > shortSleepThreshold) {
+      sleepTime = shortSleepTime;
     }
+    await sleep(sleepTime);
   }
+}
 
-  function createButton(text: string, top: string, right: string): HTMLButtonElement {
-    const button = document.createElement("button");
-    button.innerText = text;
-    button.style.position = "fixed";
-    button.style.top = top;
-    button.style.right = right;
-    button.style.zIndex = "1000";
-    document.body.appendChild(button);
-    return button;
-  }
+function resetButtonColors(buttons: Buttons) {
+  buttons.playOriginalButton.style.backgroundColor = "";
+  buttons.playTranslatedButton.style.backgroundColor = "";
+  buttons.stopButton.style.backgroundColor = "";
+}
 
-  function waitForPlayButtonSelection(): Promise<string> {
-    return new Promise((resolve) => {
-      playOriginalButton.addEventListener("click", () => {
-        console.warn("Play Original button clicked");
-        resolve(playButtonOriginalSelector);
-      });
-      playTranslatedButton.addEventListener("click", () => {
-        console.warn("Play Translated button clicked");
-        resolve(playButtonTranslatedSelector);
-      });
-    });
-  }
+function createButtons(): Buttons {
+  return {
+    playOriginalButton: createButton("Play Original", "50px", "10px"),
+    playTranslatedButton: createButton("Play Translated", "90px", "10px"),
+    stopButton: createButton("Stop Script", "10px", "10px"),
+  };
+}
 
-  const nextButtonSelector: string =
-    "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.ef1twd > div > div.vG0hre > button:nth-child(2)";
-  const playButtonOriginalSelector: string =
-    "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.OlSOob > c-wiz > div.ccvoYb > div.AxqVh > div.OPPzxe > c-wiz.rm1UF.dHeVVb.UnxENd > div.FFpbKc > div > div.r375lc > div > div.m0Qfkd > span > button";
-  const playButtonTranslatedSelector: string =
-    "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.OlSOob > c-wiz > div.ccvoYb > div.AxqVh > div.OPPzxe > c-wiz.sciAJc > div > div.usGWQd > div > div.VO9ucd > div.aJIq1d > div.m0Qfkd > span > button";
-  const playButtonStateAttr: string = "aria-label";
-  const stopListeningValue: string = "Stop listening";
-  const charCountSelector: string =
-    "#yDmH0d > c-wiz > div > div.ToWKne > c-wiz > div.OlSOob > c-wiz > div.ccvoYb > div.AxqVh > div.OPPzxe > c-wiz.rm1UF.dHeVVb.UnxENd > div.FFpbKc > div > span";
-
-  let stopFlag: boolean = false;
-  let playButtonSelector: string | undefined = undefined;
-
-  const stopButton = createButton("Stop Script", "10px", "10px");
-  const playOriginalButton = createButton("Play Original", "50px", "10px");
-  const playTranslatedButton = createButton("Play Translated", "90px", "10px");
-
-  stopButton.addEventListener("click", async () => {
+function listenToLanguageUserSelection(buttons: Buttons): Promise<string> {
+  buttons.stopButton.addEventListener("click", async () => {
+    resetButtonColors(buttons);
+    buttons.stopButton.style.backgroundColor = "red";
     stopFlag = true;
     console.warn("Script stopped by user");
   });
+  return new Promise((resolve) => {
+    buttons.playOriginalButton.addEventListener("click", () => {
+      resetButtonColors(buttons);
+      buttons.playOriginalButton.style.backgroundColor = "green";
+      console.warn("Play Original button clicked");
+      resolve(playButtonOriginalSelector);
+    });
+    buttons.playTranslatedButton.addEventListener("click", () => {
+      resetButtonColors(buttons);
+      buttons.playTranslatedButton.style.backgroundColor = "green";
+      console.warn("Play Translated button clicked");
+      resolve(playButtonTranslatedSelector);
+    });
+  });
+}
 
-  (async function () {
-    playButtonSelector = await waitForPlayButtonSelection();
-    await waitForPlayerToStop(playButtonSelector);
-    while (!stopFlag) {
-      await clickPlayStopButton(playButtonSelector);
-      await waitForPlayerToStop(playButtonSelector);
-      if (stopFlag) {
-        await clickPlayStopButton(playButtonSelector);
-        break;
-      }
-      if (!(await shouldMoveToNextPage())) {
-        break;
-      }
-      await moveToNextPage();
+function removeButtons(buttons: Buttons) {
+  buttons.stopButton.remove();
+  buttons.playOriginalButton.remove();
+  buttons.playTranslatedButton.remove();
+}
+
+async function main() {
+  const buttons = createButtons();
+  const playButtonSelector = await listenToLanguageUserSelection(buttons);
+  while (!stopFlag) {
+    if ((await clickButton(playButtonSelector)) === false) {
+      break;
     }
-    console.warn("Finished playing");
-    stopButton.remove();
-    playOriginalButton.remove();
-    playTranslatedButton.remove();
+    await waitForPlayerToFinishPlaying();
+    if (isElementPresent(nextPageSpanSelector) === false) {
+      break;
+    }
+    if ((await clickButton(nextPageButtonSelector)) === false) {
+      break;
+    }
+  }
+  await clickButton(stopListeningButtonSelector);
+  removeButtons(buttons);
+}
+
+javascript: (function () {
+  (async function () {
+    await main();
   })();
 })();
