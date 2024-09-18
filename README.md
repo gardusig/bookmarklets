@@ -18,7 +18,7 @@ Output will be located in `dist/<output-name>.bundle.js`.
 
 ## Available Bookmarklets
 
-1. [Google Translate Player Automation](./docs/google-translate-player.md)
+1. [Google Translate Player Automation](./google/README.md)
    - Automates audio playback and navigation on Google Translate.
 
 More bookmarklets will be added as they are developed!
